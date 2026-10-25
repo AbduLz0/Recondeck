@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ReconDeck
+GenericName=Network Reconnaissance
+Comment=Discover hosts and map services with nmap and arp-scan
+Exec="/home/abdul/Documents/deepseek-harness/default-workspace/recondeck/start.sh"
+Icon=/home/abdul/Documents/deepseek-harness/default-workspace/recondeck/static/img/mark.svg
+Terminal=false
+Categories=Network;Security;Utility;
+Keywords=nmap;arp;scan;network;ports;security;recon;
+StartupNotify=true

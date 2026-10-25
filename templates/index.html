@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="recon-token" content="{{ token }}">
+  <meta name="color-scheme" content="dark light">
+  <title>ReconDeck — network reconnaissance, visual</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/mark.svg">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.4"/><path d="M12 12 19 8.6"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></symbol>
+    <symbol id="i-ports" viewBox="0 0 24 24"><path d="M12 3v3.2M12 17.8V21M3 12h3.2M17.8 12H21"/><circle cx="12" cy="12" r="6.3"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.4 9.5A8.5 8.5 0 1 1 3.7 15"/><path d="M4.5 4.2v5.5h5.4"/><path d="M12 7.6V12l3 2"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8a8.6 8.6 0 1 0 11.4 11.4Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.3M12 19.7V22M2 12h2.3M19.7 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8.5 5 10 7-10 7V5Z"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="1.4"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4.5 20.5h15"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M19.2 12a7.5 7.5 0 1 0-1.4 5.7"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9 7V4.5h6V7M7 7l.8 13h8.4L17 7M10 10.5v6M14 10.5v6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10.8v5.4"/><circle cx="12" cy="7.8" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10.5" rx="2"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/><path d="M12 14v2.8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.8 12.4 4.8 4.8L19.5 7"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 22 20H2L12 3.5Z"/><path d="M12 9.3v4.8"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2.8" y="4" width="18.4" height="16" rx="2.3"/><path d="m7 9 3 3-3 3M12.5 15.5h4.5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11.5" height="11.5" rx="2"/><path d="M15.8 8V6.2a2 2 0 0 0-2-2H6.2a2 2 0 0 0-2 2v7.6a2 2 0 0 0 2 2H8"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M13 4h7v7M20 4 10.5 13.5"/><path d="M19 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 18.5v-12A1.5 1.5 0 0 1 5.5 5H10"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4.2" width="18" height="12.6" rx="2"/><path d="M8.5 20.2h7M12 16.8v3.4"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="6.5" rx="1.8"/><rect x="4" y="14" width="16" height="6.5" rx="1.8"/><path d="M7.5 6.8h.1M7.5 17.3h.1M11 6.8h5M11 17.3h5"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3.5 9.5a13 13 0 0 1 17 0M6.5 12.8a8.5 8.5 0 0 1 11 0M9.5 16a4.3 4.3 0 0 1 5 0"/><circle cx="12" cy="19.3" r="1.1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-router" viewBox="0 0 24 24"><rect x="2.8" y="12" width="18.4" height="7.3" rx="2"/><path d="M7 15.7h.1M11 15.7h.1M15 15.7h3M12 8.8V3.5M9.4 6l2.6 2.8L14.6 6"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8"/><rect x="3.5" y="8" width="17" height="8.5" rx="2"/><path d="M7 13.5h10v7H7z"/><path d="M17 11.5h.1"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.2 19.5 6v5.5c0 4.5-3 7.7-7.5 9.3-4.5-1.6-7.5-4.8-7.5-9.3V6L12 3.2Z"/><path d="m8.8 12 2.2 2.2 4.2-4.3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.5 2.2"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.5 5.5h17L14 13v6l-4 1.5V13L3.5 5.5Z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx=".8"/><path d="M9 2.8v3.2M15 2.8v3.2M9 18v3.2M15 18v3.2M2.8 9h3.2M2.8 15h3.2M18 9h3.2M18 15h3.2"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.4 9a2.7 2.7 0 1 1 3.7 2.5c-.8.4-1.1 1-1.1 1.9v.3"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.2-6 4 12L15.5 12H21"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 4.7-9 4.7-9-4.7L12 3Z"/><path d="m3 12.2 9 4.7 9-4.7M3 16.7l9 4.7 9-4.7"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.6" rx="7.8" ry="3.1"/><path d="M4.2 5.6v6.2c0 1.7 3.5 3.1 7.8 3.1s7.8-1.4 7.8-3.1V5.6"/><path d="M4.2 11.8v6.2c0 1.7 3.5 3.1 7.8 3.1s7.8-1.4 7.8-3.1v-6.2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.8 6.2 8.2 6 8.2-6"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.2 12h17.6M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21c-2.3-2.5-3.5-5.5-3.5-9S9.7 5.5 12 3Z"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 3.2 19.5 6v5.5c0 4.5-3 7.7-7.5 9.3-4.5-1.6-7.5-4.8-7.5-9.3V6L12 3.2Z"/><path d="m8.8 12 2.2 2.2 4.2-4.3"/></symbol>
+  </svg>
+
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#/overview" aria-label="ReconDeck home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18.5"/><circle cx="22" cy="22" r="12"/><circle cx="22" cy="22" r="5.4"/><path d="M22 22 35 15.5"/><circle cx="22" cy="22" r="1.8" class="fill"/><circle cx="34.5" cy="15.7" r="1.6" class="fill"/></svg>
+        </span>
+        <span class="brand-type">
+          <strong>ReconDeck</strong>
+          <small>Network intelligence</small>
+        </span>
+      </a>
+
+      <p class="rail-label">Workspace</p>
+      <nav class="primary-nav">
+        <a class="nav-link" href="#/overview" data-route="overview">
+          <svg class="icon"><use href="#i-grid"/></svg>
+          <span>Overview</span>
+          <kbd>1</kbd>
+        </a>
+        <a class="nav-link" href="#/discover" data-route="discover">
+          <svg class="icon"><use href="#i-radar"/></svg>
+          <span>Discovery</span>
+          <kbd>2</kbd>
+        </a>
+        <a class="nav-link" href="#/assets" data-route="assets">
+          <svg class="icon"><use href="#i-server"/></svg>
+          <span>Assets</span>
+          <kbd>3</kbd>
+        </a>
+        <a class="nav-link" href="#/ports" data-route="ports">
+          <svg class="icon"><use href="#i-ports"/></svg>
+          <span>Port scan</span>
+          <kbd>4</kbd>
+        </a>
+        <a class="nav-link" href="#/history" data-route="history">
+          <svg class="icon"><use href="#i-history"/></svg>
+          <span>History</span>
+          <kbd>5</kbd>
+        </a>
+      </nav>
+
+      <div class="rail-spacer"></div>
+
+      <div class="node-card" id="nodeCard">
+        <div class="node-card-head">
+          <span class="status-dot"></span>
+          <span>This machine</span>
+          <span class="mode-chip" id="privBadge">user</span>
+        </div>
+        <strong class="node-name" id="nodeName">Local workstation</strong>
+        <div class="node-address mono" id="nodeIp">Detecting interface…</div>
+        <div class="node-divider"></div>
+        <div class="tool-mini">
+          <span>Nmap</span>
+          <span class="tool-mini-state" id="nmapMini">checking…</span>
+        </div>
+        <div class="tool-mini">
+          <span>arp-scan</span>
+          <span class="tool-mini-state" id="arpMini">checking…</span>
+        </div>
+      </div>
+
+      <button class="guide-link" type="button" data-open-guide>
+        <span class="guide-icon"><svg class="icon"><use href="#i-help"/></svg></span>
+        <span><strong>Field guide</strong><small>Scope, caps &amp; shortcuts</small></span>
+        <svg class="icon guide-arrow"><use href="#i-arrow-right"/></svg>
+      </button>
+
+      <div class="rail-foot">
+        <span class="status-dot tiny"></span>
+        <span>Loopback only</span>
+        <span class="rail-foot-sep">/</span>
+        <span id="appVersion">v1.0</span>
+      </div>
+    </aside>
+
+    <div class="mobile-scrim" id="mobileScrim" aria-hidden="true" hidden></div>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-menu" type="button" id="mobileMenuBtn" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+            <svg class="icon"><use href="#i-menu"/></svg>
+          </button>
+          <div class="breadcrumb">
+            <span class="breadcrumb-root">ReconDeck</span>
+            <span class="breadcrumb-slash">/</span>
+            <span class="breadcrumb-current" id="pageCrumb">Overview</span>
+          </div>
+          <span class="workspace-id mono">LOCAL · 01</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="live-pill" id="livePill" type="button" hidden>
+            <span class="status-dot scanning"></span>
+            <span class="live-pill-text" id="livePillText">Scanning</span>
+            <span class="live-pill-progress" id="livePillProgress">0%</span>
+          </button>
+          <span class="ready-pill" id="readyPill"><span class="status-dot"></span> Ready</span>
+          <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme">
+            <svg class="icon icon-moon"><use href="#i-moon"/></svg>
+            <svg class="icon icon-sun"><use href="#i-sun"/></svg>
+          </button>
+          <div class="new-scan-wrap">
+            <button class="btn btn-primary btn-new-scan" type="button" id="newScanBtn" aria-expanded="false" aria-controls="newScanMenu" aria-label="New scan">
+              <svg class="icon"><use href="#i-plus"/></svg>
+              <span>New scan</span>
+              <svg class="icon chevron"><use href="#i-chevron-down"/></svg>
+            </button>
+            <div class="popover new-scan-menu" id="newScanMenu" hidden>
+              <p class="popover-label">Quick actions</p>
+              <button type="button" class="popover-item" data-quick-action="discover">
+                <span class="popover-icon"><svg class="icon"><use href="#i-radar"/></svg></span>
+                <span><strong>Discover a network</strong><small>ARP or Nmap host discovery</small></span>
+                <svg class="icon popover-arrow"><use href="#i-arrow-right"/></svg>
+              </button>
+              <button type="button" class="popover-item" data-quick-action="ports">
+                <span class="popover-icon"><svg class="icon"><use href="#i-ports"/></svg></span>
+                <span><strong>Scan ports</strong><small>Common, full, or custom ports</small></span>
+                <svg class="icon popover-arrow"><use href="#i-arrow-right"/></svg>
+              </button>
+              <button type="button" class="popover-item" data-quick-action="safe">
+                <span class="popover-icon"><svg class="icon"><use href="#i-shield-check"/></svg></span>
+                <span><strong>Safe-audit a host</strong><small>Versions + curated NSE checks</small></span>
+                <svg class="icon popover-arrow"><use href="#i-arrow-right"/></svg>
+              </button>
+              <button type="button" class="popover-item" data-quick-action="surface">
+                <span class="popover-icon"><svg class="icon"><use href="#i-layers"/></svg></span>
+                <span><strong>Review attack surface</strong><small>Entry-point signals by asset</small></span>
+                <svg class="icon popover-arrow"><use href="#i-arrow-right"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- OVERVIEW -->
+        <section class="page" id="page-overview" data-page="overview" aria-labelledby="overviewTitle">
+          <div class="overview-hero">
+            <div class="hero-copy">
+              <div class="eyebrow hero-eyebrow"><span class="eyebrow-rule"></span> Recon workspace <span class="eyebrow-sep">/</span> <span id="heroDate">Local</span></div>
+              <h1 id="overviewTitle">See the network.<br><span class="muted-heading">Miss nothing.</span></h1>
+              <p class="hero-lede">Find every device, map open ports, and inspect the services behind them. One quiet workbench for <span class="mono-inline">nmap</span> and <span class="mono-inline">arp-scan</span>.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary btn-lg" type="button" data-go="discover" id="heroDiscoverBtn">
+                  <svg class="icon"><use href="#i-radar"/></svg>
+                  Map this network
+                  <svg class="icon btn-end-icon"><use href="#i-arrow-right"/></svg>
+                </button>
+                <button class="btn btn-secondary btn-lg" type="button" data-go="ports">
+                  <svg class="icon"><use href="#i-ports"/></svg>
+                  Scan a host
+                </button>
+              </div>
+              <div class="auth-line">
+                <svg class="icon"><use href="#i-shield"/></svg>
+                <span>Scan only systems you own or have written permission to test.</span>
+              </div>
+            </div>
+
+            <div class="radar-panel panel">
+              <div class="radar-panel-head">
+                <div>
+                  <p class="panel-kicker">Local segment</p>
+                  <p class="radar-cidr mono" id="radarCidr">Detecting…</p>
+                </div>
+                <span class="radar-badge"><span class="status-dot"></span> Live map</span>
+              </div>
+              <div class="radar-stage" id="radarStage">
+                <div class="radar-grid" aria-hidden="true">
+                  <span class="radar-axis axis-x"></span>
+                  <span class="radar-axis axis-y"></span>
+                  <span class="radar-ring ring-1"></span>
+                  <span class="radar-ring ring-2"></span>
+                  <span class="radar-ring ring-3"></span>
+                  <span class="radar-sweep"></span>
+                  <span class="radar-origin"><span></span></span>
+                  <span class="radar-tick tick-n">N</span>
+                  <span class="radar-tick tick-e">E</span>
+                  <span class="radar-tick tick-s">S</span>
+                  <span class="radar-tick tick-w">W</span>
+                  <span class="radar-scale scale-1">25</span>
+                  <span class="radar-scale scale-2">50</span>
+                  <span class="radar-scale scale-3">75</span>
+                </div>
+                <div class="radar-nodes" id="radarNodes" aria-live="polite"></div>
+                <div class="radar-empty" id="radarEmpty">
+                  <span class="radar-empty-icon"><svg class="icon"><use href="#i-radar"/></svg></span>
+                  <strong>No nodes in view</strong>
+                  <span>Run a discovery sweep to populate the map.</span>
+                </div>
+                <span class="radar-corner corner-tl"></span>
+                <span class="radar-corner corner-tr"></span>
+                <span class="radar-corner corner-bl"></span>
+                <span class="radar-corner corner-br"></span>
+              </div>
+              <div class="radar-foot">
+                <span><strong id="radarCount">0</strong> observed hosts</span>
+                <span class="radar-foot-line"></span>
+                <span class="mono" id="radarInterface">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-label">Observed hosts</span><span class="stat-icon"><svg class="icon"><use href="#i-monitor"/></svg></span></div>
+              <div class="stat-value-row"><strong class="stat-value" id="statHosts">0</strong><span class="stat-unit">unique</span></div>
+              <p class="stat-note">Kept across your local scans</p>
+            </article>
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-label">Open services</span><span class="stat-icon"><svg class="icon"><use href="#i-ports"/></svg></span></div>
+              <div class="stat-value-row"><strong class="stat-value" id="statOpenPorts">0</strong><span class="stat-unit">ports</span></div>
+              <p class="stat-note" id="statServiceNote">Most recent observation per host</p>
+            </article>
+            <article class="stat-card attention-card">
+              <div class="stat-top"><span class="stat-label">Exposure flags</span><span class="stat-icon"><svg class="icon"><use href="#i-alert"/></svg></span></div>
+              <div class="stat-value-row"><strong class="stat-value" id="statRisks">0</strong><span class="stat-unit">review</span></div>
+              <p class="stat-note">Signals to review, not vulnerabilities</p>
+            </article>
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-label">Scans completed</span><span class="stat-icon"><svg class="icon"><use href="#i-history"/></svg></span></div>
+              <div class="stat-value-row"><strong class="stat-value" id="statScans">0</strong><span class="stat-unit">sweeps</span></div>
+              <p class="stat-note" id="statLastScan">No scans yet</p>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel recent-panel">
+              <div class="panel-heading-row">
+                <div>
+                  <p class="panel-kicker">Activity</p>
+                  <h2>Recent sweeps</h2>
+                </div>
+                <div class="activity-inline" id="activityInline" aria-label="Scans over the last seven days"></div>
+                <button class="text-link" type="button" data-go="history">View history <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+              </div>
+              <div class="recent-list" id="recentScans">
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+              </div>
+            </section>
+
+            <section class="panel start-panel">
+              <div class="panel-heading-row">
+                <div>
+                  <p class="panel-kicker">Start here</p>
+                  <h2>Launch a sweep</h2>
+                </div>
+                <span class="panel-index mono">01–03</span>
+              </div>
+              <div class="quick-list">
+                <button class="quick-action" type="button" data-quick-action="discover">
+                  <span class="quick-number mono">01</span>
+                  <span class="quick-icon"><svg class="icon"><use href="#i-radar"/></svg></span>
+                  <span class="quick-copy"><strong>Map this network</strong><small>arp-scan · Nmap ping sweep</small></span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow-up-right"/></svg>
+                </button>
+                <button class="quick-action" type="button" data-quick-action="ports">
+                  <span class="quick-number mono">02</span>
+                  <span class="quick-icon"><svg class="icon"><use href="#i-ports"/></svg></span>
+                  <span class="quick-copy"><strong>Sweep common ports</strong><small>Top 100 TCP ports</small></span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow-up-right"/></svg>
+                </button>
+                <button class="quick-action" type="button" data-quick-action="safe">
+                  <span class="quick-number mono">03</span>
+                  <span class="quick-icon"><svg class="icon"><use href="#i-shield-check"/></svg></span>
+                  <span class="quick-copy"><strong>Safe-audit an asset</strong><small>TLS · headers · host keys</small></span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow-up-right"/></svg>
+                </button>
+              </div>
+              <div class="engine-strip">
+                <div class="engine-strip-head"><span class="status-dot"></span><span>Scan engine</span><span class="mono" id="engineMode">detecting</span></div>
+                <div class="engine-list" id="engineList">
+                  <span class="engine-skeleton"></span><span class="engine-skeleton"></span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- DISCOVERY -->
+        <section class="page" id="page-discover" data-page="discover" aria-labelledby="discoverTitle">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-rule"></span> Phase 01 · Enumeration</div>
+              <h1 id="discoverTitle">Find what’s on the wire.</h1>
+              <p>ARP-level visibility for the local segment, or an Nmap ping sweep when raw packet access is not available.</p>
+            </div>
+            <div class="page-heading-meta">
+              <div class="meta-tile"><span>Active interface</span><strong class="mono" id="discoverIfaceMeta">—</strong></div>
+              <div class="meta-tile"><span>Primary network</span><strong class="mono" id="discoverNetMeta">—</strong></div>
+            </div>
+          </div>
+
+          <div class="workbench">
+            <aside class="workbench-side">
+              <form class="panel config-panel" id="discoverForm" novalidate>
+                <div class="config-head">
+                  <div class="config-step mono">01</div>
+                  <div><p class="panel-kicker">New discovery</p><h2>Map the segment</h2></div>
+                  <span class="method-badge">ARP / ICMP</span>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="discoverTarget">Network, address, or range <span>IPv4</span></label>
+                  <div class="input-shell">
+                    <span class="input-icon"><svg class="icon"><use href="#i-radar"/></svg></span>
+                    <input class="text-input mono" id="discoverTarget" name="target" type="text" placeholder="192.168.1.0/24" autocomplete="off" spellcheck="false" maxlength="64" required>
+                    <span class="input-hint">CIDR</span>
+                  </div>
+                  <div class="inline-chips" id="networkChips"></div>
+                </div>
+
+                <fieldset class="field-group">
+                  <legend class="field-label">Discovery engine</legend>
+                  <div class="engine-options">
+                    <label class="engine-option is-selected" data-engine-option="auto">
+                      <input type="radio" name="discoverEngine" value="auto" checked>
+                      <span class="engine-radio"></span>
+                      <span class="engine-body"><strong>Auto <span class="recommended">Recommended</span></strong><small>ARP when permitted, Nmap otherwise.</small></span>
+                      <svg class="icon engine-logo"><use href="#i-shield"/></svg>
+                    </label>
+                    <label class="engine-option" data-engine-option="arp">
+                      <input type="radio" name="discoverEngine" value="arp">
+                      <span class="engine-radio"></span>
+                      <span class="engine-body"><strong>ARP sweep <span class="engine-chip">arp-scan</span></strong><small>MAC address and vendor for local devices.</small></span>
+                      <svg class="icon engine-logo"><use href="#i-wifi"/></svg>
+                    </label>
+                    <label class="engine-option" data-engine-option="nmap">
+                      <input type="radio" name="discoverEngine" value="nmap">
+                      <span class="engine-radio"></span>
+                      <span class="engine-body"><strong>Nmap ping <span class="engine-chip">unprivileged</span></strong><small>Host discovery without raw sockets.</small></span>
+                      <svg class="icon engine-logo"><use href="#i-activity"/></svg>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <details class="advanced-box">
+                  <summary><span><svg class="icon"><use href="#i-sliders"/></svg> Interface &amp; engine details</span><svg class="icon details-chevron"><use href="#i-chevron-down"/></svg></summary>
+                  <div class="advanced-content">
+                    <div class="field-group compact">
+                      <label class="field-label" for="discoverInterface">Network interface <span>optional</span></label>
+                      <div class="select-shell">
+                        <select id="discoverInterface" class="select-input">
+                          <option value="">Auto-select</option>
+                        </select>
+                        <svg class="icon"><use href="#i-chevron-down"/></svg>
+                      </div>
+                    </div>
+                    <p class="microcopy" id="arpPrivilegeNote">ARP packet capture needs <span class="mono">CAP_NET_RAW</span>. Auto falls back to Nmap ping without it.</p>
+                  </div>
+                </details>
+
+                <div class="command-peek">
+                  <div class="command-peek-head"><span><svg class="icon"><use href="#i-terminal"/></svg> Command preview</span><span class="mono">READ ONLY</span></div>
+                  <code id="discoverCommandPreview">arp-scan --interface=… 192.168.1.0/24</code>
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" type="submit" id="discoverSubmit">
+                  <span class="btn-running-icon"><svg class="icon"><use href="#i-radar"/></svg></span>
+                  <span class="btn-label">Start discovery</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                  <svg class="icon btn-end-icon"><use href="#i-arrow-right"/></svg>
+                </button>
+                <p class="form-note"><svg class="icon"><use href="#i-info"/></svg> A discovery sweep sends probes to every address in the range. Keep it on networks you control.</p>
+              </form>
+
+              <div class="privilege-card" id="privilegeCard">
+                <div class="privilege-head"><span class="privilege-icon"><svg class="icon"><use href="#i-lock"/></svg></span><div><strong>ARP support</strong><span id="privilegeState">Checking capabilities…</span></div><span class="mode-chip" id="privilegeMode">—</span></div>
+                <p id="privilegeCopy">ReconDeck will choose the safest available discovery method.</p>
+                <button class="text-link" type="button" data-open-guide>View capability setup <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+              </div>
+            </aside>
+
+            <div class="workbench-main">
+              <div id="discoveryActive"></div>
+              <section class="panel results-panel" aria-labelledby="discoveryResultsTitle">
+                <div class="results-head">
+                  <div class="results-title">
+                    <p class="panel-kicker">Network inventory</p>
+                    <h2 id="discoveryResultsTitle">Devices in view <span class="count-badge" id="discoveryCount">0</span></h2>
+                    <p class="results-sub" id="discoverySub">Your latest discovery results will land here.</p>
+                  </div>
+                  <div class="results-tools">
+                    <div class="search-shell compact-search">
+                      <svg class="icon"><use href="#i-search"/></svg>
+                      <input type="search" id="discoverySearch" placeholder="Filter devices" aria-label="Filter devices" autocomplete="off">
+                    </div>
+                    <button class="icon-btn" type="button" id="discoveryRefresh" title="Refresh inventory" aria-label="Refresh inventory"><svg class="icon"><use href="#i-refresh"/></svg></button>
+                  </div>
+                </div>
+                <div id="discoveryResults" class="results-body" aria-live="polite">
+                  <div class="empty-state" id="discoveryEmpty">
+                    <div class="empty-orbit" aria-hidden="true"><span></span><span></span><i></i></div>
+                    <p class="panel-kicker">Awaiting signal</p>
+                    <h3>No devices mapped yet</h3>
+                    <p>Choose a network on the left and start a discovery sweep. Local devices will appear here with address, vendor, and open ports.</p>
+                    <button class="btn btn-secondary" type="button" data-focus="discoverTarget">Configure a sweep <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+                  </div>
+                </div>
+                <div class="results-foot" id="discoveryFoot" hidden>
+                  <span class="mono" id="discoveryScanMeta">—</span>
+                  <button class="text-link" type="button" id="discoveryOpenScan">Open scan details <svg class="icon"><use href="#i-arrow-up-right"/></svg></button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ASSETS -->
+        <section class="page" id="page-assets" data-page="assets" aria-labelledby="assetsTitle">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-rule"></span> Asset intelligence · Per-device clarity</div>
+              <h1 id="assetsTitle">Every asset. Every port.</h1>
+              <p>Access points and hosts in one place, with the ports already observed on each. Open an asset to see its full port picture, scan coverage, and recent evidence — then audit just that device.</p>
+            </div>
+            <div class="page-heading-meta">
+              <div class="meta-tile"><span>Inventory</span><strong class="mono" id="assetMetaSource">Local evidence</strong></div>
+              <div class="meta-tile"><span>Assessment</span><strong class="mono">Safe checks only</strong></div>
+            </div>
+          </div>
+
+          <div class="asset-summary">
+            <div class="asset-summary-item">
+              <span class="asset-summary-icon"><svg class="icon"><use href="#i-server"/></svg></span>
+              <span class="asset-summary-copy"><small>Observed assets</small><strong id="assetStatTotal">0</strong></span>
+            </div>
+            <div class="asset-summary-item">
+              <span class="asset-summary-icon"><svg class="icon"><use href="#i-wifi"/></svg></span>
+              <span class="asset-summary-copy"><small>Access points / routers</small><strong id="assetStatAps">0</strong></span>
+            </div>
+            <div class="asset-summary-item">
+              <span class="asset-summary-icon"><svg class="icon"><use href="#i-ports"/></svg></span>
+              <span class="asset-summary-copy"><small>Open services</small><strong id="assetStatPorts">0</strong></span>
+            </div>
+            <div class="asset-summary-item asset-summary-alert">
+              <span class="asset-summary-icon"><svg class="icon"><use href="#i-alert"/></svg></span>
+              <span class="asset-summary-copy"><small>Review signals</small><strong id="assetStatFlags">0</strong></span>
+            </div>
+          </div>
+
+          <div class="asset-tabs-row">
+            <div class="asset-tabs" role="tablist" aria-label="Asset views">
+              <button class="asset-tab is-active" type="button" role="tab" aria-selected="true" data-asset-tab="inventory">
+                <svg class="icon"><use href="#i-list"/></svg> Inventory
+              </button>
+              <button class="asset-tab" type="button" role="tab" aria-selected="false" data-asset-tab="surface">
+                <svg class="icon"><use href="#i-layers"/></svg> Attack surface
+              </button>
+            </div>
+            <span class="asset-tabs-note"><svg class="icon"><use href="#i-lock"/></svg> Read-only evidence from your local scans</span>
+          </div>
+
+          <div id="assetInventoryView">
+            <section class="panel asset-panel">
+              <div class="asset-toolbar">
+                <div class="filter-tabs asset-filters" role="group" aria-label="Filter assets">
+                  <button class="filter-tab is-active" type="button" data-asset-filter="all">All assets</button>
+                  <button class="filter-tab" type="button" data-asset-filter="aps">Access points</button>
+                  <button class="filter-tab" type="button" data-asset-filter="servers">Servers</button>
+                  <button class="filter-tab" type="button" data-asset-filter="review">Needs review</button>
+                  <button class="filter-tab" type="button" data-asset-filter="unscanned">Unscanned</button>
+                </div>
+                <div class="asset-tools">
+                  <div class="search-shell compact-search">
+                    <svg class="icon"><use href="#i-search"/></svg>
+                    <input type="search" id="assetSearch" placeholder="Filter assets" aria-label="Filter assets" autocomplete="off">
+                  </div>
+                  <div class="export-menu-wrap">
+                    <button class="btn btn-secondary asset-export-btn" type="button" data-export-toggle aria-expanded="false">
+                      <svg class="icon"><use href="#i-download"/></svg><span>Export</span><svg class="icon chevron"><use href="#i-chevron-down"/></svg>
+                    </button>
+                    <div class="export-menu" id="assetExportMenu" hidden>
+                      <button type="button" data-inventory-format="csv"><svg class="icon"><use href="#i-list"/></svg> Inventory CSV <span class="mono">.csv</span></button>
+                      <button type="button" data-inventory-format="json"><svg class="icon"><use href="#i-copy"/></svg> Inventory JSON <span class="mono">.json</span></button>
+                    </div>
+                  </div>
+                  <button class="icon-btn" type="button" id="assetRefresh" title="Refresh assets" aria-label="Refresh assets"><svg class="icon"><use href="#i-refresh"/></svg></button>
+                </div>
+              </div>
+              <div class="asset-active-context" id="assetActiveContext" hidden></div>
+              <div class="asset-list-head">
+                <span>Asset</span><span>Type</span><span>Observed ports</span><span>Scan coverage</span><span>Signals</span><span></span>
+              </div>
+              <div class="asset-list" id="assetList" aria-live="polite">
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+              </div>
+              <div class="asset-list-foot">
+                <span class="mono" id="assetListMeta">0 assets in view</span>
+                <span>Port evidence is refreshed by each completed scan.</span>
+              </div>
+            </section>
+          </div>
+
+          <div id="assetSurfaceView" hidden>
+            <div class="surface-intro panel">
+              <div>
+                <div class="eyebrow"><span class="eyebrow-rule"></span> Safe assessment</div>
+                <h2>See the doors <span class="muted-heading">before you need them.</span></h2>
+                <p>Group exposed services into review categories, identify assets that deserve attention, and run a curated safe audit. This is evidence for a human — not an exploit engine.</p>
+              </div>
+              <button class="btn btn-primary" type="button" data-safe-audit>
+                <svg class="icon"><use href="#i-shield-check"/></svg> Configure safe audit
+              </button>
+            </div>
+            <div class="surface-stats">
+              <div class="surface-stat"><small>Assets with signals</small><strong id="surfaceStatHosts">0</strong></div>
+              <div class="surface-stat"><small>High-signal services</small><strong id="surfaceStatHigh">0</strong></div>
+              <div class="surface-stat"><small>Cleartext services</small><strong id="surfaceStatCleartext">0</strong></div>
+              <div class="surface-stat"><small>Never port-scanned</small><strong id="surfaceStatUnscanned">0</strong></div>
+            </div>
+            <div class="surface-layout">
+              <div class="surface-categories" id="surfaceCategories"></div>
+              <aside class="panel surface-priority-panel">
+                <div class="panel-heading-row">
+                  <div><p class="panel-kicker">Priority review</p><h2>Assets to inspect</h2></div>
+                  <span class="panel-index mono">SAFE</span>
+                </div>
+                <div id="surfacePriority" class="surface-priority"></div>
+                <div class="surface-disclaimer">
+                  <svg class="icon"><use href="#i-shield"/></svg>
+                  <span>Exposure signals are prompts based on ports and service names. ReconDeck does not collect credentials, exploit services, brute-force logins, or generate attack payloads.</span>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <!-- PORT SCAN -->
+        <section class="page" id="page-ports" data-page="ports" aria-labelledby="portsTitle">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-rule"></span> Phase 02 · Port &amp; service mapping</div>
+              <h1 id="portsTitle">Follow the signal in.</h1>
+              <p>Move from a host to its exposed surface. Choose a profile, optionally add service detection, and watch Nmap work.</p>
+            </div>
+            <div class="page-heading-meta">
+              <div class="meta-tile"><span>Scan mode</span><strong class="mono" id="portModeMeta">TCP connect</strong></div>
+              <div class="meta-tile"><span>OS fingerprint</span><strong class="mono" id="portPrivMeta">Unavailable</strong></div>
+            </div>
+          </div>
+
+          <div class="workbench">
+            <aside class="workbench-side">
+              <form class="panel config-panel" id="portForm" novalidate>
+                <div class="config-head">
+                  <div class="config-step mono">02</div>
+                  <div><p class="panel-kicker">New port scan</p><h2>Choose a target</h2></div>
+                  <span class="method-badge">NMAP</span>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="portTarget">Hostname, IP, range, or subnet</label>
+                  <div class="input-shell">
+                    <span class="input-icon"><svg class="icon"><use href="#i-ports"/></svg></span>
+                    <input class="text-input mono" id="portTarget" name="target" type="text" placeholder="192.168.1.10" autocomplete="off" spellcheck="false" maxlength="80" required>
+                  </div>
+                  <div class="inline-chips" id="portTargetChips"></div>
+                </div>
+
+                <fieldset class="field-group">
+                  <legend class="field-label">Scan profile</legend>
+                  <div class="profile-grid">
+                    <label class="profile-option is-selected" data-profile-option="quick">
+                      <input type="radio" name="scanProfile" value="quick" checked>
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Quick</span><span class="profile-time">~5s</span></span>
+                      <span class="profile-ports mono">TOP 100</span>
+                      <small>Fast surface check</small>
+                    </label>
+                    <label class="profile-option" data-profile-option="standard">
+                      <input type="radio" name="scanProfile" value="standard">
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Standard</span><span class="profile-time">~20s</span></span>
+                      <span class="profile-ports mono">TOP 1K</span>
+                      <small>Common service ports</small>
+                    </label>
+                    <label class="profile-option" data-profile-option="full">
+                      <input type="radio" name="scanProfile" value="full">
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Deep</span><span class="profile-time">~2m+</span></span>
+                      <span class="profile-ports mono">1–65535</span>
+                      <small>Every TCP port</small>
+                    </label>
+                    <label class="profile-option" data-profile-option="services">
+                      <input type="radio" name="scanProfile" value="services">
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Service audit</span><span class="profile-time">slower</span></span>
+                      <span class="profile-ports mono">TOP 1K + -sV</span>
+                      <small>Version fingerprints</small>
+                    </label>
+                    <label class="profile-option" data-profile-option="safe">
+                      <input type="radio" name="scanProfile" value="safe">
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Safe audit</span><span class="profile-time">deep</span></span>
+                      <span class="profile-ports mono">SAFE NSE</span>
+                      <small>TLS, headers, host keys</small>
+                    </label>
+                    <label class="profile-option profile-custom" data-profile-option="custom">
+                      <input type="radio" name="scanProfile" value="custom">
+                      <span class="profile-top"><span class="profile-radio"></span><span class="profile-name">Custom</span><span class="profile-time">your call</span></span>
+                      <span class="profile-ports mono">CHOOSE PORTS</span>
+                      <small>Your own port list or range</small>
+                    </label>
+                  </div>
+                  <div class="custom-ports-wrap" id="customPortsWrap" hidden>
+                    <label class="field-label" for="customPorts">Ports <span>1–65535</span></label>
+                    <input class="text-input mono" id="customPorts" type="text" placeholder="22,80,443,8000-8100" autocomplete="off" spellcheck="false">
+                  </div>
+                </fieldset>
+
+                <details class="advanced-box" id="portAdvanced">
+                  <summary><span><svg class="icon"><use href="#i-sliders"/></svg> Advanced options</span><svg class="icon details-chevron"><use href="#i-chevron-down"/></svg></summary>
+                  <div class="advanced-content">
+                    <label class="switch-row">
+                      <span><strong>Service &amp; version detection</strong><small>Fingerprint products on open ports.</small></span>
+                      <input type="checkbox" id="optService">
+                      <span class="switch-ui" aria-hidden="true"></span>
+                    </label>
+                    <label class="switch-row">
+                      <span><strong>Default NSE scripts</strong><small>Active checks. Ignored when Safe audit is selected.</small></span>
+                      <input type="checkbox" id="optScripts">
+                      <span class="switch-ui" aria-hidden="true"></span>
+                    </label>
+                    <label class="switch-row" id="osOptionRow">
+                      <span><strong>OS fingerprint <span class="lock-inline" id="osLock"><svg class="icon"><use href="#i-lock"/></svg> raw access</span></strong><small>Ask Nmap to guess the host OS.</small></span>
+                      <input type="checkbox" id="optOs">
+                      <span class="switch-ui" aria-hidden="true"></span>
+                    </label>
+                    <label class="switch-row">
+                      <span><strong>Treat hosts as online</strong><small>Skip host discovery with <span class="mono">-Pn</span>.</small></span>
+                      <input type="checkbox" id="optSkipPing">
+                      <span class="switch-ui" aria-hidden="true"></span>
+                    </label>
+                    <div class="inline-fields">
+                      <div class="field-group compact">
+                        <label class="field-label" for="optTiming">Timing template</label>
+                        <div class="select-shell">
+                          <select id="optTiming" class="select-input">
+                            <option value="polite">Polite · T3</option>
+                            <option value="normal" selected>Normal · T4</option>
+                            <option value="aggressive">Aggressive · T5</option>
+                          </select>
+                          <svg class="icon"><use href="#i-chevron-down"/></svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <div class="command-peek">
+                  <div class="command-peek-head"><span><svg class="icon"><use href="#i-terminal"/></svg> Command preview</span><span class="mono">READ ONLY</span></div>
+                  <code id="portCommandPreview">nmap -sT -T4 --top-ports 100 192.168.1.10</code>
+                </div>
+
+                <div class="target-estimate" id="targetEstimate"><span class="mono">SCOPE</span><span>No target selected</span></div>
+
+                <button class="btn btn-primary btn-block btn-lg" type="submit" id="portSubmit">
+                  <span class="btn-running-icon"><svg class="icon"><use href="#i-play"/></svg></span>
+                  <span class="btn-label">Launch port scan</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                  <svg class="icon btn-end-icon"><use href="#i-arrow-right"/></svg>
+                </button>
+                <p class="form-note"><svg class="icon"><use href="#i-info"/></svg> ReconDeck translates this form into a fixed Nmap command. Shell input is never accepted.</p>
+              </form>
+
+              <div class="privilege-card" id="scanScopeCard">
+                <div class="privilege-head"><span class="privilege-icon"><svg class="icon"><use href="#i-shield"/></svg></span><div><strong>Authorized use only</strong><span>Recon is only as safe as its scope.</span></div></div>
+                <p>Port scans touch remote services and can be logged. Confirm written permission before scanning anything you do not own.</p>
+              </div>
+            </aside>
+
+            <div class="workbench-main">
+              <div id="portsActive"></div>
+              <div id="portResults" aria-live="polite">
+                <section class="panel results-panel" id="portEmptyPanel">
+                  <div class="results-head">
+                    <div class="results-title"><p class="panel-kicker">Scan workspace</p><h2>No scan loaded</h2><p class="results-sub">Configure a target and profile on the left.</p></div>
+                    <span class="method-badge quiet">TCP</span>
+                  </div>
+                  <div class="empty-state ports-empty">
+                    <div class="empty-port-art" aria-hidden="true">
+                      <span class="port-node p1"></span><span class="port-node p2"></span><span class="port-node p3"></span>
+                      <span class="port-line l1"></span><span class="port-line l2"></span><span class="port-line l3"></span>
+                      <span class="port-target"><svg class="icon"><use href="#i-ports"/></svg></span>
+                    </div>
+                    <p class="panel-kicker">Signal quiet</p>
+                    <h3>Every open port tells a story</h3>
+                    <p>Run a quick sweep to enumerate common services, or choose the service audit profile to identify what is listening and which version is answering.</p>
+                    <button class="btn btn-secondary" type="button" data-focus="portTarget">Set a target <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="page" id="page-history" data-page="history" aria-labelledby="historyTitle">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-rule"></span> Archive · Local only</div>
+              <h1 id="historyTitle">The trail you leave.</h1>
+              <p>Every sweep is stored locally in SQLite. Open a scan to inspect its findings, replay the command, or export the data.</p>
+            </div>
+            <div class="page-heading-meta">
+              <div class="meta-tile"><span>Stored locally</span><strong class="mono">SQLite</strong></div>
+              <div class="meta-tile"><span>Retention</span><strong class="mono">Until deleted</strong></div>
+            </div>
+          </div>
+
+          <div class="history-summary" id="historySummary">
+            <div class="history-summary-item"><span>Total sweeps</span><strong id="historyTotal">0</strong></div>
+            <div class="history-summary-item"><span>Completed</span><strong id="historyCompleted">0</strong></div>
+            <div class="history-summary-item"><span>Observed hosts</span><strong id="historyHosts">0</strong></div>
+            <div class="history-summary-item"><span>Latest activity</span><strong id="historyLatest">—</strong></div>
+          </div>
+
+          <section class="panel history-panel">
+            <div class="history-toolbar">
+              <div class="filter-tabs" role="tablist" aria-label="Filter scans by type">
+                <button class="filter-tab is-active" type="button" role="tab" aria-selected="true" data-history-kind="">All scans</button>
+                <button class="filter-tab" type="button" role="tab" aria-selected="false" data-history-kind="discover">Discovery</button>
+                <button class="filter-tab" type="button" role="tab" aria-selected="false" data-history-kind="ports">Port scans</button>
+              </div>
+              <div class="history-tools">
+                <div class="search-shell compact-search">
+                  <svg class="icon"><use href="#i-search"/></svg>
+                  <input type="search" id="historySearch" placeholder="Search targets, profiles" aria-label="Search scan history" autocomplete="off">
+                </div>
+                <div class="select-shell compact-select">
+                  <select id="historyStatus" class="select-input" aria-label="Filter by status">
+                    <option value="">Any status</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="interrupted">Interrupted</option>
+                    <option value="running">Running</option>
+                  </select>
+                  <svg class="icon"><use href="#i-chevron-down"/></svg>
+                </div>
+                <button class="icon-btn" type="button" id="historyRefresh" title="Refresh history" aria-label="Refresh history"><svg class="icon"><use href="#i-refresh"/></svg></button>
+              </div>
+            </div>
+            <div class="history-table-wrap" id="historyTable">
+              <div class="history-empty">
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+                <div class="skeleton-row"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
+
+      <footer class="app-footer">
+        <div class="footer-left"><span class="status-dot tiny"></span> ReconDeck runs on <span class="mono">127.0.0.1</span> and stores data only on this machine.</div>
+        <div class="footer-right"><span>Nmap + arp-scan</span><span class="footer-dot"></span><span>Built for authorized reconnaissance</span></div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+  <aside class="drawer" id="detailDrawer" aria-labelledby="drawerTitle" aria-hidden="true" hidden>
+    <header class="drawer-head">
+      <div>
+        <p class="panel-kicker" id="drawerKicker">Scan details</p>
+        <h2 id="drawerTitle">Details</h2>
+      </div>
+      <button class="icon-btn" type="button" id="drawerClose" aria-label="Close details"><svg class="icon"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <div class="modal-host" id="guideModal" hidden>
+    <div class="modal-scrim" data-close-guide></div>
+    <section class="modal guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+      <header class="modal-head">
+        <div>
+          <p class="panel-kicker">Field guide</p>
+          <h2 id="guideTitle">Know your scope. Know your tools.</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-guide aria-label="Close field guide"><svg class="icon"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body guide-grid">
+        <div class="guide-copy">
+          <h3>Permission is the first packet.</h3>
+          <p>ReconDeck wraps two well-known tools. It does not grant authorization. Only scan systems you own or have explicit, documented permission to test.</p>
+          <div class="guide-callout"><svg class="icon"><use href="#i-shield"/></svg><span>Discovery sends ARP or ICMP probes to an entire range. Port scans touch services and may appear in remote logs.</span></div>
+          <h3>Attack surface, not exploitation</h3>
+          <p>Safe audit runs a curated, non-intrusive NSE set for banners, HTTP metadata, TLS certificates, SSH host keys, and SMB identity. ReconDeck intentionally does not include exploit execution, credential attacks, brute force, or denial-of-service features.</p>
+          <h3>Unlock ARP and OS detection</h3>
+          <p>ARP capture and OS fingerprinting need raw packet access. Run the launcher with suitable privileges, or grant the two binaries the narrower capability and restart ReconDeck.</p>
+          <div class="command-copy">
+            <code id="capCommand">sudo setcap cap_net_raw,cap_net_admin+eip /usr/bin/nmap
+sudo setcap cap_net_raw,cap_net_admin+eip /usr/sbin/arp-scan</code>
+            <button class="icon-btn" type="button" data-copy-target="capCommand" title="Copy capability commands" aria-label="Copy capability commands"><svg class="icon"><use href="#i-copy"/></svg></button>
+          </div>
+          <p class="microcopy">In a restricted container, local capabilities may not be enough. In that case, Auto uses Nmap's unprivileged ping discovery and TCP connect scanning.</p>
+        </div>
+        <div class="guide-side">
+          <h3>Keyboard</h3>
+          <div class="key-row"><span>Navigate pages</span><kbd>G</kbd><kbd>1</kbd>–<kbd>5</kbd></div>
+          <div class="key-row"><span>Search / filter</span><kbd>/</kbd></div>
+          <div class="key-row"><span>Close overlay</span><kbd>Esc</kbd></div>
+          <div class="guide-side-section">
+            <h3>What ships with ReconDeck</h3>
+            <ul class="clean-list">
+              <li><svg class="icon"><use href="#i-check"/></svg> Loopback-only web workspace</li>
+              <li><svg class="icon"><use href="#i-check"/></svg> Fixed, validated scanner arguments</li>
+              <li><svg class="icon"><use href="#i-check"/></svg> Per-asset inventory and safe NSE audits</li>
+              <li><svg class="icon"><use href="#i-check"/></svg> Local SQLite scan history</li>
+              <li><svg class="icon"><use href="#i-check"/></svg> JSON, CSV, and raw-log export</li>
+              <li><svg class="icon"><use href="#i-check"/></svg> No telemetry or cloud calls</li>
+            </ul>
+          </div>
+          <div class="guide-signature"><span class="status-dot"></span> Scans stay on this machine</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="false"></div>
+  <div class="confirm-host" id="confirmModal" hidden>
+    <div class="modal-scrim" data-confirm-close></div>
+    <section class="modal confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="confirm-icon" id="confirmIcon"><svg class="icon"><use href="#i-alert"/></svg></div>
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmCopy">This action cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" type="button" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" type="button" id="confirmOk">Confirm</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static/js/app.js" defer></script>
+</body>
+</html>
